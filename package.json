@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.ts",
+    "dev": "nodemon dist/index.js",
+    "dev2": "nodemon --exec ts-node src/index.ts",
     "start": "node dist/index.ts",
     "start2": "ts-node src/index.ts"
   },
@@ -18,6 +19,11 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "@mikro-orm/cli": "^4.5.4",
+    "@mikro-orm/core": "^4.5.4",
+    "@mikro-orm/migrations": "^4.5.4",
+    "@mikro-orm/postgresql": "^4.5.4",
+    "pg": "^8.6.0",
     "ts-node": "^9.1.1"
   }
 }
