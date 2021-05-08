@@ -1,0 +1,23 @@
+{
+  "name": "Reddit-Server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "dev": "nodemon dist/index.ts",
+    "start": "node dist/index.ts",
+    "start2": "ts-node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^15.0.2",
+    "nodemon": "^2.0.7",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "ts-node": "^9.1.1"
+  }
+}
