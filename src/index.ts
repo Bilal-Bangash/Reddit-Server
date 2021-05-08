@@ -1,8 +1,11 @@
 import { MikroORM } from "@mikro-orm/core";
 import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
 import { __prod__ } from "./constants";
 // import { Post } from "./entities/Post";
 import mikroConfig from "./mikro-orm.config";
+import { StarterResolver } from "./resolvers/firstResolver";
 
 //creating mikro-orm instance it return promise
 
@@ -16,10 +19,17 @@ const main = async () => {
 
   const app = express();
 
-  //simple get request
-  app.get("/", (_req, res) => {
-    return res.status(200).json({ message: "Assalam o Aliekum" });
+  //setting up Apollo GraphQL Server
+
+  // we need a graphql schema
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [StarterResolver],
+      validate: false,
+    }),
   });
+
+  apolloServer.applyMiddleware({ app });
 
   app.listen(3000, () => console.log("listening on PORT 3000"));
 
