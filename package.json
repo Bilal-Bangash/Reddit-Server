@@ -29,6 +29,7 @@
     "graphql": "^15.5.0",
     "path": "^0.12.7",
     "pg": "^8.6.0",
+    "reflect-metadata": "^0.1.13",
     "ts-node": "^9.1.1",
     "type-graphql": "^1.1.1"
   },
