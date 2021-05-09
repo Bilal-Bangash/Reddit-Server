@@ -8,6 +8,7 @@ import { __prod__ } from "./constants";
 import mikroConfig from "./mikro-orm.config";
 import { StarterResolver } from "./resolvers/firstResolver";
 import { PostResolver } from "./resolvers/post";
+import { UserResolver } from "./resolvers/user";
 
 //creating mikro-orm instance it return promise
 
@@ -26,7 +27,7 @@ const main = async () => {
   // we need a graphql schema
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [StarterResolver, PostResolver],
+      resolvers: [StarterResolver, PostResolver, UserResolver],
       validate: false,
     }),
     context: () => ({ em: mikroORM.em }),
