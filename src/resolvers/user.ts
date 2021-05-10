@@ -11,6 +11,7 @@ import {
 import { User } from "./../entities/User";
 import { MyContext } from "src/types";
 import argon2 from "argon2";
+import { EntityManager } from "@mikro-orm/postgresql";
 
 @InputType() //decorators input types use for arguments
 class UsernamePasswordInput {
@@ -54,7 +55,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async register(
     @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { em }: MyContext
+    @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
     if (options.username.length <= 2) {
       return {
@@ -77,12 +78,25 @@ export class UserResolver {
       };
     }
     const hashPassword = await argon2.hash(options.password);
-    const user = em.create(User, {
-      username: options.username,
-      password: hashPassword,
-    });
+    // const user = em.create(User, {
+    //   username: options.username,
+    //   password: hashPassword,
+    // });
+    let user;
     try {
-      await em.persistAndFlush(user);
+      //added QueryBuilder
+      const result = await (em as EntityManager)
+        .createQueryBuilder(User)
+        .getKnexQuery()
+        .insert({
+          username: options.username,
+          password: hashPassword,
+          created_at: new Date(),
+          updated_at: new Date(),
+        })
+        .returning("*");
+      user = result[0];
+      // await em.persistAndFlush(user);
     } catch (error) {
       //duplicate user error code is 23505
       if (error.code === "23505" || error.detail.includes("already exists")) {
@@ -96,6 +110,7 @@ export class UserResolver {
         };
       }
     }
+    req.session.userId = user.id; //define undefined ! exclamation mark
     return { user };
   }
 
@@ -129,6 +144,9 @@ export class UserResolver {
         ],
       };
     }
+    //store user id session
+    //this will keep set a cookie on the user
+    //keep them logged in
     req.session.userId = user.id; //define undefined ! exclamation mark
 
     return { user };

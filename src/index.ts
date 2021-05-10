@@ -11,6 +11,7 @@ import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import redis from "redis";
 import session from "express-session";
+import cors from "cors";
 import connectRedis from "connect-redis";
 import { MyContext } from "./types";
 
@@ -31,7 +32,13 @@ const main = async () => {
   redisClient.on("connect", function () {
     console.log("Connected");
   });
-  // console.log("redisClient", redisClient);
+
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
   app.use(
     session({
       name: "qid",
@@ -61,9 +68,13 @@ const main = async () => {
     context: ({ req, res }): MyContext => ({ em: mikroORM.em, req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    // cors: { origin: "http://localhost:3000" },
+    cors: false,
+  });
 
-  app.listen(3000, () => console.log("listening on PORT 3000"));
+  app.listen(4000, () => console.log("listening on PORT 4000"));
 
   //   create simple post
 
